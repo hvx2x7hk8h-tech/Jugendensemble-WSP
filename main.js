@@ -1,3 +1,18 @@
+// ── NAV SCROLL (versteckt beim runterscrollen, zeigt beim hochscrollen) ──
+const nav = document.querySelector('nav');
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const current = window.scrollY;
+  if (current <= 60) {
+    nav?.classList.remove('scrolled', 'nav-hidden');
+  } else if (current > lastScroll) {
+    nav?.classList.add('nav-hidden');
+  } else {
+    nav?.classList.remove('nav-hidden');
+    nav?.classList.add('scrolled');
+  }
+  lastScroll = current;
+});
 
 // ── HAMBURGER ──
 const hamburger = document.querySelector('.hamburger');
@@ -16,10 +31,10 @@ document.querySelectorAll('.mobile-menu a').forEach(a => {
 });
 
 // ── ACTIVE NAV LINK ──
-const currentPath = window.location.pathname.replace(/\/$/, '') || '/index.html';
+const currentPath = window.location.pathname;
 document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
-  const href = a.getAttribute('href').replace(/\/$/, '');
-  if (currentPath.endsWith(href) || (href === 'index.html' && (currentPath === '' || currentPath === '/'))) {
+  const href = a.getAttribute('href');
+  if (currentPath.endsWith(href) || (href === 'index.html' && (currentPath === '/' || currentPath.endsWith('/')))) {
     a.classList.add('active');
   }
 });
@@ -30,7 +45,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ── LOAD CONTENT FROM JSON ──
+// ── LOAD JSON ──
 async function loadJSON(path) {
   try {
     const r = await fetch(path + '?v=' + Date.now());
@@ -44,12 +59,12 @@ async function renderEvents(containerId, showAll = false) {
   if (!container) return;
   const data = await loadJSON('/content/events.json');
   if (!data || !data.events || data.events.length === 0) {
-    container.innerHTML = `<div class="no-events"><p>Aktuell keine Veranstaltungen geplant.</p><p style="margin-top:0.5rem;font-size:0.75rem;color:var(--text-muted)">Schau bald wieder vorbei!</p></div>`;
+    container.innerHTML = `<div class="no-events"><p>Aktuell keine Veranstaltungen geplant.</p></div>`;
     return;
   }
   const events = showAll ? data.events : data.events.filter(e => !e.past).slice(0, 3);
   if (events.length === 0) {
-    container.innerHTML = `<div class="no-events"><p>Aktuell keine Veranstaltungen geplant.</p><p style="margin-top:0.5rem;font-size:0.75rem;color:var(--text-muted)">Schau bald wieder vorbei!</p></div>`;
+    container.innerHTML = `<div class="no-events"><p>Aktuell keine Veranstaltungen geplant.</p></div>`;
     return;
   }
   container.innerHTML = events.map(ev => `
@@ -61,9 +76,7 @@ async function renderEvents(containerId, showAll = false) {
         <div class="event-venue">${ev.venue}</div>
         ${ev.description ? `<p style="margin-top:0.5rem;font-size:0.85rem">${ev.description}</p>` : ''}
       </div>
-      <div>
-        ${ev.past ? '<span class="past-badge">Vergangen</span>' : ev.ticket_url ? `<a href="${ev.ticket_url}" target="_blank" rel="noopener" class="btn btn-primary">Tickets</a>` : '<span class="past-badge">Demnächst</span>'}
-      </div>
+      <div>${ev.past ? '<span class="past-badge">Vergangen</span>' : ev.ticket_url ? `<a href="${ev.ticket_url}" target="_blank" rel="noopener" class="btn btn-primary">Tickets</a>` : '<span class="past-badge">Demnächst</span>'}</div>
     </div>
   `).join('');
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));

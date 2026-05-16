@@ -1,13 +1,440 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
-  <title>Admin — Jugendensemble WSP</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Website Builder — Jugendensemble WSP</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Raleway:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0c;--surface:#111114;--surface2:#1a1a1f;--surface3:#222228;
+  --gold:#c9a84c;--gold-dim:rgba(201,168,76,0.12);--gold-border:rgba(201,168,76,0.25);
+  --text:#f0ede8;--muted:#777;--danger:#e05555;--success:#55c47a;
+  --font-d:'Cinzel',serif;--font-b:'Raleway',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);height:100vh;overflow:hidden}
+
+/* LOGIN */
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:2rem;background:var(--bg)}
+#login-screen h1{font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase}
+#login-screen p{color:var(--muted);font-size:0.85rem;font-weight:300}
+.login-btn{padding:0.9rem 2.5rem;border:1px solid var(--gold);background:none;color:var(--gold);font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
+.login-btn:hover{background:var(--gold);color:var(--bg)}
+
+/* BUILDER LAYOUT */
+#builder{display:none;height:100vh;flex-direction:column}
+#builder.visible{display:flex}
+
+/* TOP BAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--gold-border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-logo{font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase}
+.topbar-actions{display:flex;gap:0.7rem;align-items:center}
+.tb-btn{padding:0.45rem 1.2rem;font-family:var(--font-d);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;border:1px solid var(--gold-border);background:none;color:var(--muted);cursor:pointer;transition:all 0.3s}
+.tb-btn:hover{border-color:var(--gold);color:var(--gold)}
+.tb-btn.primary{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.tb-btn.primary:hover{background:#e8d5a3}
+.tb-btn.danger{border-color:rgba(224,85,85,0.4);color:var(--danger)}
+.save-status{font-size:0.65rem;color:var(--muted);font-weight:300}
+.save-status.saving{color:var(--gold)}
+.save-status.saved{color:var(--success)}
+.save-status.error{color:var(--danger)}
+
+/* MAIN AREA */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--gold-border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar-section{padding:1.2rem 1rem 0.5rem;font-family:var(--font-d);font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted)}
+.nav-item{padding:0.7rem 1.2rem;font-size:0.78rem;font-weight:400;color:var(--muted);cursor:pointer;transition:all 0.2s;border-left:2px solid transparent;display:flex;align-items:center;gap:0.6rem}
+.nav-item:hover{color:var(--text);background:var(--gold-dim)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim)}
+.nav-item .icon{font-size:0.9rem;width:18px;text-align:center}
+
+/* EDITOR PANEL */
+.editor{flex:1;overflow-y:auto;padding:2rem;background:var(--bg)}
+.editor-section{display:none}
+.editor-section.active{display:block}
+.section-title{font-family:var(--font-d);font-size:0.8rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem}
+.section-sub{font-size:0.78rem;color:var(--muted);font-weight:300;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--gold-border)}
+
+/* FIELDS */
+.field{margin-bottom:1.5rem}
+.field label{display:block;font-family:var(--font-d);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+.field .hint{font-size:0.7rem;color:var(--muted);font-weight:300;margin-top:0.3rem}
+.field input,.field textarea,.field select{width:100%;background:var(--surface2);border:1px solid var(--gold-border);padding:0.75rem 1rem;color:var(--text);font-family:var(--font-b);font-size:0.88rem;font-weight:300;outline:none;transition:border-color 0.3s;-webkit-appearance:none}
+.field input:focus,.field textarea:focus{border-color:var(--gold)}
+.field textarea{resize:vertical;min-height:120px;line-height:1.7}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.field-row .field{margin-bottom:0}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:1rem}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--surface3);border:1px solid var(--gold-border);cursor:pointer;transition:0.3s}
+.toggle-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:var(--muted);transition:0.3s}
+.toggle input:checked + .toggle-slider{background:var(--gold-dim);border-color:var(--gold)}
+.toggle input:checked + .toggle-slider:before{transform:translateX(18px);background:var(--gold)}
+.toggle-label{font-size:0.82rem;font-weight:300;color:var(--text)}
+
+/* EVENT CARDS */
+.event-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem}
+.event-item{background:var(--surface2);border:1px solid var(--gold-border);padding:1.2rem;position:relative}
+.event-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.event-item-title{font-family:var(--font-d);font-size:0.75rem;letter-spacing:0.1em;color:var(--text)}
+.event-item-actions{display:flex;gap:0.5rem}
+.icon-btn{background:none;border:1px solid var(--gold-border);color:var(--muted);width:28px;height:28px;cursor:pointer;font-size:0.75rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+.icon-btn.del:hover{border-color:var(--danger);color:var(--danger)}
+.event-item .field{margin-bottom:0.8rem}
+.event-item .field:last-child{margin-bottom:0}
+.add-btn{width:100%;padding:0.75rem;background:none;border:1px dashed var(--gold-border);color:var(--muted);font-family:var(--font-d);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
+.add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--gold-border);margin:2rem 0}
+
+/* PREVIEW */
+.preview-pane{width:420px;flex-shrink:0;border-left:1px solid var(--gold-border);background:var(--surface);display:flex;flex-direction:column}
+.preview-header{padding:0.8rem 1.2rem;border-bottom:1px solid var(--gold-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.preview-label{font-family:var(--font-d);font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted)}
+.preview-iframe{flex:1;border:none;background:#060608}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--surface2);border:1px solid var(--gold-border);padding:0.9rem 1.5rem;font-size:0.8rem;font-weight:300;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.success{border-color:var(--success);color:var(--success)}
+.toast.error{border-color:var(--danger);color:var(--danger)}
+
+/* IMG PREVIEW */
+.img-preview{width:100%;max-height:140px;object-fit:cover;margin-top:0.5rem;border:1px solid var(--gold-border)}
+
+@media(max-width:900px){
+  .preview-pane{display:none}
+  .sidebar{width:180px}
+}
+@media(max-width:600px){
+  .sidebar{display:none}
+  .editor{padding:1rem}
+}
+</style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <h1>Jugendensemble WSP</h1>
+  <p>Website Builder — Bitte einloggen</p>
+  <button class="login-btn" onclick="netlifyIdentity.open()">Einloggen</button>
+</div>
+
+<!-- BUILDER -->
+<div id="builder">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <span class="topbar-logo">⬛ WSP Builder</span>
+    <div class="topbar-actions">
+      <span class="save-status" id="save-status"></span>
+      <button class="tb-btn" onclick="window.open('/', '_blank')">🌐 Vorschau</button>
+      <button class="tb-btn primary" id="save-btn" onclick="saveAll()">Speichern</button>
+      <button class="tb-btn danger" onclick="netlifyIdentity.logout()">Abmelden</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-section">Seiten</div>
+      <div class="nav-item active" onclick="showSection('startseite')"><span class="icon">🏠</span>Startseite</div>
+      <div class="nav-item" onclick="showSection('ueber')"><span class="icon">👥</span>Über uns</div>
+      <div class="nav-item" onclick="showSection('events')"><span class="icon">🎭</span>Veranstaltungen</div>
+      <div class="nav-item" onclick="showSection('kontakt')"><span class="icon">✉️</span>Kontakt</div>
+      <div class="sidebar-section">Rechtliches</div>
+      <div class="nav-item" onclick="showSection('impressum')"><span class="icon">📋</span>Impressum</div>
+      <div class="nav-item" onclick="showSection('datenschutz')"><span class="icon">🔒</span>Datenschutz</div>
+      <div class="sidebar-section">Global</div>
+      <div class="nav-item" onclick="showSection('einstellungen')"><span class="icon">⚙️</span>Einstellungen</div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="editor">
+
+      <!-- STARTSEITE -->
+      <div class="editor-section active" id="sec-startseite">
+        <div class="section-title">Startseite</div>
+        <div class="section-sub">Bearbeite Hero-Bereich, Einleitungstext und Zitat.</div>
+        <div class="field"><label>Untertitel (unter dem Logo)</label><input type="text" id="home-subtitle" placeholder="Ein freies Theaterprojekt…"></div>
+        <div class="field"><label>Einleitungstext</label><textarea id="home-intro" placeholder="Wir sind eine Gruppe…"></textarea><div class="hint">Erscheint im „Wer wir sind" Abschnitt.</div></div>
+        <div class="field"><label>Zitat (Banner)</label><input type="text" id="home-quote" placeholder="Das Leben ist ein Theater…"></div>
+      </div>
+
+      <!-- ÜBER UNS -->
+      <div class="editor-section" id="sec-ueber">
+        <div class="section-title">Über uns</div>
+        <div class="section-sub">Linker Titel, Zitat, Haupttext und Statistiken.</div>
+        <div class="field"><label>Linker Titel</label><input type="text" id="about-title" placeholder="Eine Gruppe. Eine Bühne. Eine Leidenschaft."><div class="hint">Mit Punkt getrennte Zeilen, z.B.: Eine Gruppe. Eine Bühne. Eine Leidenschaft.</div></div>
+        <div class="field"><label>Zitat (links)</label><input type="text" id="about-quote" placeholder="Wir sind pleite — aber reich an Ideen."></div>
+        <div class="field"><label>Haupttext</label><textarea id="about-body" style="min-height:220px" placeholder="Euer Text…"></textarea><div class="hint">Leerzeile zwischen Absätzen lassen.</div></div>
+        <div class="divider"></div>
+        <div class="section-title" style="font-size:0.65rem;margin-bottom:1.2rem">Statistiken</div>
+        <div class="field-row">
+          <div class="field"><label>Stat 1 Zahl</label><input type="text" id="stat1v" placeholder="8"></div>
+          <div class="field"><label>Stat 1 Text</label><input type="text" id="stat1l" placeholder="Darsteller:innen"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Stat 2 Zahl</label><input type="text" id="stat2v" placeholder="1"></div>
+          <div class="field"><label>Stat 2 Text</label><input type="text" id="stat2l" placeholder="Stück auf der Bühne"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Stat 3 Zahl</label><input type="text" id="stat3v" placeholder="∞"></div>
+          <div class="field"><label>Stat 3 Text</label><input type="text" id="stat3l" placeholder="Herzblut"></div>
+        </div>
+      </div>
+
+      <!-- VERANSTALTUNGEN -->
+      <div class="editor-section" id="sec-events">
+        <div class="section-title">Veranstaltungen</div>
+        <div class="section-sub">Füge Vorstellungen hinzu, bearbeite oder entferne sie.</div>
+        <div class="event-list" id="event-list"></div>
+        <button class="add-btn" onclick="addEvent()">+ Neue Veranstaltung hinzufügen</button>
+      </div>
+
+      <!-- KONTAKT -->
+      <div class="editor-section" id="sec-kontakt">
+        <div class="section-title">Kontakt</div>
+        <div class="section-sub">Einleitungstext und Standort auf der Kontaktseite.</div>
+        <div class="field"><label>Einleitungstext</label><textarea id="contact-intro" placeholder="Hast du Fragen…"></textarea></div>
+        <div class="field"><label>Ort</label><input type="text" id="contact-location" placeholder="Bonn, Nordrhein-Westfalen"></div>
+      </div>
+
+      <!-- IMPRESSUM -->
+      <div class="editor-section" id="sec-impressum">
+        <div class="section-title">Impressum</div>
+        <div class="section-sub">Pflichtangaben gemäß § 5 TMG. Bitte vollständig ausfüllen!</div>
+        <div class="field"><label>Verantwortliche Person (Vor- und Nachname)</label><input type="text" id="imp-name" placeholder="Max Mustermann"></div>
+        <div class="field-row">
+          <div class="field"><label>Straße + Hausnummer</label><input type="text" id="imp-street" placeholder="Musterstraße 12"></div>
+          <div class="field"><label>PLZ + Stadt</label><input type="text" id="imp-city" placeholder="53111 Bonn"></div>
+        </div>
+        <div class="field"><label>E-Mail Adresse</label><input type="email" id="imp-email" placeholder="jugendensemblewsp@gmail.com"></div>
+        <div class="field"><label>Zusatzhinweis (optional)</label><textarea id="imp-note" placeholder="z.B. Diese Website dient ausschließlich nicht-kommerziellen Zwecken."></textarea></div>
+      </div>
+
+      <!-- DATENSCHUTZ -->
+      <div class="editor-section" id="sec-datenschutz">
+        <div class="section-title">Datenschutz</div>
+        <div class="section-sub">Kontaktdaten für die Datenschutzerklärung.</div>
+        <div class="field"><label>Verantwortliche Person</label><input type="text" id="dsz-name" placeholder="Max Mustermann"></div>
+        <div class="field-row">
+          <div class="field"><label>Straße + Hausnummer</label><input type="text" id="dsz-street" placeholder="Musterstraße 12"></div>
+          <div class="field"><label>PLZ + Stadt</label><input type="text" id="dsz-city" placeholder="53111 Bonn"></div>
+        </div>
+        <div class="field"><label>E-Mail Adresse</label><input type="email" id="dsz-email" placeholder="jugendensemblewsp@gmail.com"></div>
+      </div>
+
+      <!-- EINSTELLUNGEN -->
+      <div class="editor-section" id="sec-einstellungen">
+        <div class="section-title">Einstellungen</div>
+        <div class="section-sub">Globale Einstellungen für die gesamte Website.</div>
+        <div class="field"><label>Kontakt E-Mail</label><input type="email" id="set-email" placeholder="jugendensemblewsp@gmail.com"></div>
+        <div class="field"><label>Instagram URL</label><input type="url" id="set-instagram" placeholder="https://instagram.com/jugendensemble_wsp/"></div>
+        <div class="field"><label>Formspree ID</label><input type="text" id="set-formspree" placeholder="xpzvwkrq"><div class="hint">Kostenlos registrieren auf formspree.io — dann bekommst du Kontaktformular-Nachrichten per E-Mail.</div></div>
+      </div>
+
+    </div><!-- /editor -->
+
+    <!-- PREVIEW -->
+    <div class="preview-pane">
+      <div class="preview-header">
+        <span class="preview-label">Live-Vorschau</span>
+        <button class="tb-btn" onclick="reloadPreview()">↺ Neu laden</button>
+      </div>
+      <iframe class="preview-iframe" id="preview-frame" src="/"></iframe>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let token = null;
+let repoInfo = null;
+let allData = {};
+let events = [];
+
+// ── AUTH ──
+netlifyIdentity.on('init', user => { if (user) onLogin(user); });
+netlifyIdentity.on('login', user => { onLogin(user); netlifyIdentity.close(); });
+netlifyIdentity.on('logout', () => { document.getElementById('login-screen').style.display = 'flex'; document.getElementById('builder').classList.remove('visible'); });
+
+async function onLogin(user) {
+  token = user.token?.access_token;
+  if (!token) { await new Promise(r => setTimeout(r, 600)); token = netlifyIdentity.currentUser()?.token?.access_token; }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('builder').classList.add('visible');
+  await loadAll();
+}
+
+// ── GIT GATEWAY ──
+async function gitGet(path) {
+  const r = await fetch(`/.netlify/git/github/contents/${path}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) return null;
+  return await r.json();
+}
+
+async function gitPut(path, content, sha) {
+  const r = await fetch(`/.netlify/git/github/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `Update ${path} via WSP Builder`, content: btoa(unescape(encodeURIComponent(content))), sha })
+  });
+  return r.ok;
+}
+
+async function loadFile(path) {
+  const d = await gitGet(path);
+  if (!d) return { content: null, sha: null };
+  return { content: JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g, ''))))), sha: d.sha };
+}
+
+// ── LOAD ALL ──
+async function loadAll() {
+  setStatus('Wird geladen…', 'saving');
+  const files = ['content/home.json','content/about.json','content/events.json','content/contact_page.json','content/impressum.json','content/datenschutz.json','content/settings.json'];
+  for (const f of files) { const d = await loadFile(f); allData[f] = d; }
+  populateFields();
+  setStatus('', '');
+}
+
+function populateFields() {
+  const h = allData['content/home.json']?.content || {};
+  v('home-subtitle', h.hero_subtitle); v('home-intro', h.intro_text); v('home-quote', h.quote);
+
+  const a = allData['content/about.json']?.content || {};
+  v('about-title', a.left_title); v('about-quote', a.left_quote); v('about-body', a.body);
+  v('stat1v', a.stat1_value); v('stat1l', a.stat1_label);
+  v('stat2v', a.stat2_value); v('stat2l', a.stat2_label);
+  v('stat3v', a.stat3_value); v('stat3l', a.stat3_label);
+
+  events = (allData['content/events.json']?.content?.events) || [];
+  renderEventList();
+
+  const c = allData['content/contact_page.json']?.content || {};
+  v('contact-intro', c.intro); v('contact-location', c.location);
+
+  const i = allData['content/impressum.json']?.content || {};
+  v('imp-name', i.name); v('imp-street', i.street); v('imp-city', i.city); v('imp-email', i.email); v('imp-note', i.note);
+
+  const dz = allData['content/datenschutz.json']?.content || {};
+  v('dsz-name', dz.name); v('dsz-street', dz.street); v('dsz-city', dz.city); v('dsz-email', dz.email);
+
+  const s = allData['content/settings.json']?.content || {};
+  v('set-email', s.email); v('set-instagram', s.instagram); v('set-formspree', s.formspree_id);
+}
+
+function v(id, val) { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; }
+function g(id) { return document.getElementById(id)?.value || ''; }
+
+// ── EVENTS ──
+function renderEventList() {
+  const list = document.getElementById('event-list');
+  list.innerHTML = events.map((ev, i) => `
+    <div class="event-item" id="ev-${i}">
+      <div class="event-item-header">
+        <span class="event-item-title">${ev.title || 'Neue Veranstaltung'}</span>
+        <div class="event-item-actions">
+          <button class="icon-btn del" onclick="removeEvent(${i})" title="Löschen">✕</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Titel</label><input type="text" value="${ev.title||''}" oninput="events[${i}].title=this.value;document.querySelector('#ev-${i} .event-item-title').textContent=this.value||'Neue Veranstaltung'"></div>
+        <div class="field"><label>Datum</label><input type="text" value="${ev.date||''}" placeholder="Sa., 15. März 2026" oninput="events[${i}].date=this.value"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Uhrzeit</label><input type="text" value="${ev.time||''}" placeholder="19:30 Uhr" oninput="events[${i}].time=this.value"></div>
+        <div class="field"><label>Veranstaltungsort</label><input type="text" value="${ev.venue||''}" placeholder="Theater Bonn" oninput="events[${i}].venue=this.value"></div>
+      </div>
+      <div class="field"><label>Ticket-Link (Eventbrite)</label><input type="url" value="${ev.ticket_url||''}" placeholder="https://eventbrite.de/…" oninput="events[${i}].ticket_url=this.value"></div>
+      <div class="field"><label>Kurzbeschreibung (optional)</label><input type="text" value="${ev.description||''}" oninput="events[${i}].description=this.value"></div>
+      <div class="field"><label>Bild-URL (optional)</label><input type="url" value="${ev.image||''}" placeholder="https://…" oninput="events[${i}].image=this.value"></div>
+      <div class="field">
+        <div class="toggle-wrap">
+          <label class="toggle"><input type="checkbox" ${ev.past?'checked':''} onchange="events[${i}].past=this.checked"><span class="toggle-slider"></span></label>
+          <span class="toggle-label">Vorstellung ist vorbei (Vergangen)</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addEvent() {
+  events.push({ title: 'Neue Veranstaltung', date: '', time: '', venue: '', description: '', ticket_url: '', image: '', past: false });
+  renderEventList();
+  document.getElementById(`ev-${events.length - 1}`)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function removeEvent(i) {
+  if (!confirm(`„${events[i].title}" wirklich löschen?`)) return;
+  events.splice(i, 1);
+  renderEventList();
+}
+
+// ── SAVE ──
+async function saveAll() {
+  setStatus('Wird gespeichert…', 'saving');
+  document.getElementById('save-btn').disabled = true;
+
+  const saves = [
+    ['content/home.json', { hero_subtitle: g('home-subtitle'), intro_text: g('home-intro'), quote: g('home-quote') }],
+    ['content/about.json', { left_title: g('about-title'), left_quote: g('about-quote'), body: g('about-body'), stat1_value: g('stat1v'), stat1_label: g('stat1l'), stat2_value: g('stat2v'), stat2_label: g('stat2l'), stat3_value: g('stat3v'), stat3_label: g('stat3l') }],
+    ['content/events.json', { events }],
+    ['content/contact_page.json', { intro: g('contact-intro'), location: g('contact-location') }],
+    ['content/impressum.json', { name: g('imp-name'), street: g('imp-street'), city: g('imp-city'), email: g('imp-email'), note: g('imp-note') }],
+    ['content/datenschutz.json', { name: g('dsz-name'), street: g('dsz-street'), city: g('dsz-city'), email: g('dsz-email') }],
+    ['content/settings.json', { email: g('set-email'), instagram: g('set-instagram'), formspree_id: g('set-formspree') }],
+  ];
+
+  let ok = true;
+  for (const [path, data] of saves) {
+    const sha = allData[path]?.sha;
+    const success = await gitPut(path, JSON.stringify(data, null, 2), sha);
+    if (success) { allData[path] = { content: data, sha: allData[path]?.sha }; }
+    else { ok = false; }
+  }
+
+  document.getElementById('save-btn').disabled = false;
+  if (ok) { showToast('✓ Gespeichert! Netlify deployt die Änderungen in ca. 30 Sekunden.', 'success'); setStatus('Gespeichert ✓', 'saved'); setTimeout(() => setStatus('', ''), 4000); }
+  else { showToast('Fehler beim Speichern. Bitte erneut versuchen.', 'error'); setStatus('Fehler', 'error'); }
+}
+
+// ── UI HELPERS ──
+function showSection(id) {
+  document.querySelectorAll('.editor-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`sec-${id}`)?.classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = 'save-status' + (type ? ' ' + type : '');
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function reloadPreview() { document.getElementById('preview-frame').src = '/'; }
+</script>
 </body>
 </html>

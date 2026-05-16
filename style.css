@@ -44,6 +44,14 @@ nav {
   transition: background 0.4s, border-color 0.4s;
   border-bottom: 1px solid transparent;
 }
+
+nav {
+  transition: transform 0.35s ease, background 0.4s, border-color 0.4s;
+}
+nav.nav-hidden {
+  transform: translateY(-100%);
+}
+
 nav.scrolled {
   background: var(--nav-bg);
   border-bottom-color: var(--border);
