@@ -12,6 +12,48 @@
   --border: rgba(201,168,76,0.2);
   --font-display: 'Cinzel', serif;
   --font-body: 'Raleway', sans-serif;
+  --nav-bg: rgba(8,8,8,0.97);
+  --footer-bg: #040404;
+  --card-bg: #181818;
+  --shadow: rgba(0,0,0,0.4);
+}
+
+/* ── LIGHT MODE ── */
+body.light {
+  --bg: #f5f2ec;
+  --surface: #ece8e0;
+  --surface-2: #e3ddd3;
+  --gold: #9a6f28;
+  --gold-light: #7a5418;
+  --gold-dim: rgba(154,111,40,0.08);
+  --text: #1a1714;
+  --text-muted: #6b6560;
+  --border: rgba(154,111,40,0.25);
+  --nav-bg: rgba(245,242,236,0.97);
+  --footer-bg: #e0dbd2;
+  --card-bg: #e3ddd3;
+  --shadow: rgba(0,0,0,0.12);
+}
+
+/* ── THEME TOGGLE BUTTON ── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--gold);
+  color: var(--bg);
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +82,7 @@ nav {
   border-bottom: 1px solid transparent;
 }
 nav.scrolled {
-  background: rgba(8,8,8,0.97);
+  background: var(--nav-bg);
   border-bottom-color: var(--border);
   backdrop-filter: blur(12px);
 }
@@ -102,7 +144,7 @@ nav.scrolled {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(8,8,8,0.99);
+  background: var(--nav-bg);
   z-index: 199;
   flex-direction: column;
   align-items: center;
@@ -331,7 +373,7 @@ p:last-child { margin-bottom: 0; }
   transition: all 0.3s;
   position: relative;
   overflow: hidden;
-  background: var(--surface-2);
+  background: var(--card-bg);
 }
 .event-card::before {
   content: '';
@@ -400,7 +442,7 @@ label {
   color: var(--text-muted);
 }
 input, textarea, select {
-  background: var(--surface-2);
+  background: var(--card-bg);
   border: 1px solid var(--border);
   padding: 0.9rem 1.2rem;
   color: var(--text);
@@ -421,12 +463,12 @@ textarea { resize: vertical; min-height: 140px; }
   height: 42vh;
   min-height: 280px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
   overflow: hidden;
-  padding-bottom: 4rem;
+  padding-bottom: 0;
 }
 .page-hero-bg {
   position: absolute;
@@ -452,7 +494,7 @@ textarea { resize: vertical; min-height: 140px; }
 
 /* ── FOOTER ── */
 footer {
-  background: #040404;
+  background: var(--footer-bg);
   border-top: 1px solid var(--border);
   padding: 3.5rem 5rem;
 }

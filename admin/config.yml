@@ -25,29 +25,79 @@ collections:
               - {label: "Titel", name: "title", widget: "string", hint: "z.B. Känguru Chroniken"}
               - {label: "Datum", name: "date", widget: "string", hint: "z.B. Samstag, 15. März 2026"}
               - {label: "Uhrzeit", name: "time", widget: "string", required: false, hint: "z.B. 19:30 Uhr"}
-              - {label: "Veranstaltungsort", name: "venue", widget: "string", hint: "z.B. Theater Bonn – Opernhaus"}
+              - {label: "Veranstaltungsort", name: "venue", widget: "string"}
               - {label: "Kurzbeschreibung", name: "description", widget: "text", required: false}
-              - {label: "Ticket-Link", name: "ticket_url", widget: "string", required: false, hint: "Link zu Eventbrite oder ähnlichem"}
+              - {label: "Ticket-Link (Eventbrite o.ä.)", name: "ticket_url", widget: "string", required: false}
               - {label: "Poster / Bild", name: "image", widget: "image", required: false}
               - {label: "Vergangen?", name: "past", widget: "boolean", default: false, hint: "Aktivieren wenn die Vorstellung vorbei ist"}
 
   - name: "seiten"
     label: "📝 Seiteninhalte"
     files:
+
       - label: "Startseite"
         name: "home"
         file: "content/home.json"
         format: "json"
         fields:
-          - {label: "Untertitel im Hero (unter dem Titel)", name: "hero_subtitle", widget: "string"}
-          - {label: "Kurztext (Wer sind wir? - Startseite)", name: "intro_text", widget: "text"}
+          - {label: "Untertitel (Hero)", name: "hero_subtitle", widget: "string", hint: "Kleiner Text unter dem Logo im Hero-Bereich"}
+          - {label: "Einleitungstext (Wer wir sind)", name: "intro_text", widget: "text", hint: "Kurzer Text auf der Startseite"}
+          - {label: "Zitat (Banner unten)", name: "quote", widget: "string", required: false, hint: "Das Zitat das unten auf der Startseite erscheint"}
 
       - label: "Über uns"
         name: "about"
         file: "content/about.json"
         format: "json"
         fields:
-          - {label: "Über uns — Text", name: "body", widget: "text", hint: "Doppelte Leerzeile = neuer Absatz"}
+          - {label: "Linker Titel (3 Zeilen)", name: "left_title", widget: "string", hint: "z.B. Eine Gruppe. — wird auf 3 Zeilen aufgeteilt durch Komma"}
+          - {label: "Zitat (links)", name: "left_quote", widget: "string", hint: "Das kursive Zitat links"}
+          - {label: "Haupttext", name: "body", widget: "text", hint: "Doppelte Leerzeile = neuer Absatz"}
+          - {label: "Stat 1 — Zahl", name: "stat1_value", widget: "string", default: "8"}
+          - {label: "Stat 1 — Beschriftung", name: "stat1_label", widget: "string", default: "Darsteller:innen"}
+          - {label: "Stat 2 — Zahl", name: "stat2_value", widget: "string", default: "1"}
+          - {label: "Stat 2 — Beschriftung", name: "stat2_label", widget: "string", default: "Stück auf der Bühne"}
+          - {label: "Stat 3 — Zahl", name: "stat3_value", widget: "string", default: "∞"}
+          - {label: "Stat 3 — Beschriftung", name: "stat3_label", widget: "string", default: "Herzblut"}
+
+      - label: "Veranstaltungen — Ticket Info Text"
+        name: "events_page"
+        file: "content/events_page.json"
+        format: "json"
+        fields:
+          - {label: "Ticket-Info Text", name: "ticket_info", widget: "text", hint: "Text unter der Veranstaltungsliste"}
+
+      - label: "Kontakt"
+        name: "contact_page"
+        file: "content/contact_page.json"
+        format: "json"
+        fields:
+          - {label: "Einleitungstext", name: "intro", widget: "text"}
+          - {label: "Ort (z.B. Bonn, NRW)", name: "location", widget: "string"}
+
+  - name: "legal"
+    label: "⚖️ Rechtliches"
+    files:
+
+      - label: "Impressum"
+        name: "impressum"
+        file: "content/impressum.json"
+        format: "json"
+        fields:
+          - {label: "Verantwortliche Person — Vorname Nachname", name: "name", widget: "string", hint: "z.B. Max Mustermann"}
+          - {label: "Straße + Hausnummer", name: "street", widget: "string", hint: "z.B. Musterstraße 12"}
+          - {label: "PLZ + Stadt", name: "city", widget: "string", hint: "z.B. 53111 Bonn"}
+          - {label: "E-Mail", name: "email", widget: "string"}
+          - {label: "Zusatzhinweis (optional)", name: "note", widget: "text", required: false, hint: "z.B. Hinweis zur nicht-kommerziellen Nutzung"}
+
+      - label: "Datenschutz — Kontaktdaten"
+        name: "datenschutz"
+        file: "content/datenschutz.json"
+        format: "json"
+        fields:
+          - {label: "Verantwortliche Person — Vorname Nachname", name: "name", widget: "string"}
+          - {label: "Straße + Hausnummer", name: "street", widget: "string"}
+          - {label: "PLZ + Stadt", name: "city", widget: "string"}
+          - {label: "E-Mail", name: "email", widget: "string"}
 
   - name: "einstellungen"
     label: "⚙️ Einstellungen"
@@ -58,5 +108,5 @@ collections:
         format: "json"
         fields:
           - {label: "Kontakt E-Mail", name: "email", widget: "string"}
-          - {label: "Instagram URL", name: "instagram", widget: "string", required: false, hint: "https://instagram.com/..."}
-          - {label: "Formspree ID (Kontaktformular)", name: "formspree_id", widget: "string", hint: "Die ID von formspree.io, z.B. xpzvwkrq"}
+          - {label: "Instagram URL", name: "instagram", widget: "string", required: false}
+          - {label: "Formspree ID (Kontaktformular)", name: "formspree_id", widget: "string", hint: "ID von formspree.io"}

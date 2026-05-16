@@ -1,4 +1,25 @@
-// ── NAV SCROLL ──
+// ── THEME TOGGLE ──
+const savedTheme = localStorage.getItem('wsp-theme') || 'dark';
+if (savedTheme === 'light') document.body.classList.add('light');
+
+function updateToggleIcon() {
+  const isLight = document.body.classList.contains('light');
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.textContent = isLight ? '🌙' : '☀️';
+    btn.title = isLight ? 'Dunkles Design' : 'Helles Design';
+  });
+}
+updateToggleIcon();
+
+document.querySelectorAll('.theme-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    localStorage.setItem('wsp-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    updateToggleIcon();
+  });
+});
+
+
 const nav = document.querySelector('nav');
 window.addEventListener('scroll', () => {
   nav?.classList.toggle('scrolled', window.scrollY > 40);
