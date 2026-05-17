@@ -185,6 +185,14 @@
       btn.disabled = false;
     }
   }
+
+  (async () => {
+    const _home = await loadJSON('/content/home.json');
+    const _img = _home?.hero_image || 'https://static.wixstatic.com/media/511c42_025226b9919d4c0281caa5309b7d210c~mv2.jpeg';
+    document.querySelectorAll('.hero-bg, .page-hero-bg').forEach(el => {
+      el.style.backgroundImage = `url('${_img}')`;
+    });
+  })();
 </script>
 </body>
 </html>

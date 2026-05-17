@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poiret+One&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
 :root {
   --bg: #080808;
@@ -10,7 +10,7 @@
   --text: #f0ede8;
   --text-muted: #888;
   --border: rgba(201,168,76,0.2);
-  --font-display: 'Cinzel', serif;
+  --font-display: 'Poiret One', cursive;
   --font-body: 'Raleway', sans-serif;
   --nav-bg: rgba(8,8,8,0.97);
   --footer-bg: #040404;
