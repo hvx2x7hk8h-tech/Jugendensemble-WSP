@@ -27,7 +27,8 @@ collections:
               - {label: "Uhrzeit", name: "time", widget: "string", required: false, hint: "z.B. 19:30 Uhr"}
               - {label: "Veranstaltungsort", name: "venue", widget: "string"}
               - {label: "Kurzbeschreibung", name: "description", widget: "text", required: false}
-              - {label: "Ticket-Link", name: "ticket_url", widget: "string", required: false}
+              - {label: "TicketTailor Widget-ID", name: "tt_widget_id", widget: "string", required: false, hint: "Aus TicketTailor Dashboard → Events → Embed. Leer lassen wenn noch nicht eingerichtet."}
+              - {label: "Ticket-Link (Fallback)", name: "ticket_url", widget: "string", required: false, hint: "Nur wenn keine TicketTailor Widget-ID vorhanden"}
               - {label: "Poster / Bild", name: "image", widget: "image", required: false}
               - {label: "Vergangen?", name: "past", widget: "boolean", default: false}
 
