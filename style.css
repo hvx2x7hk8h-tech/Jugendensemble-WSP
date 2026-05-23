@@ -57,14 +57,32 @@ nav.scrolled {
   border-bottom-color: var(--border);
   backdrop-filter: blur(12px);
 }
+
+/* ── LOGO IMAGE ── */
 .nav-logo {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.25em;
-  color: var(--gold);
-  text-decoration: none;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
 }
+.nav-logo-img {
+  height: 48px;
+  width: auto;
+  /* White bg logo on dark nav: mix-blend-mode makes white invisible */
+  mix-blend-mode: multiply;
+  filter: invert(1);
+  transition: opacity 0.3s;
+}
+.nav-logo-img:hover { opacity: 0.8; }
+
+/* Footer logo stays text */
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 .nav-links a {
   color: var(--text);
