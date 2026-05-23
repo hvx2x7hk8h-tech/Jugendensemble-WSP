@@ -1,15 +1,21 @@
 {
   "events": [
     {
-      "title": "Känguru Chroniken",
-      "date": "Mi., 18. März 2026",
       "time": "",
+      "date": "Mi., 18. März 2026",
       "venue": "Theater Bonn – Opernhaus",
-      "description": "",
+      "past": true,
       "tt_widget_id": "",
-      "ticket_url": "",
+      "title": "Känguru Chroniken",
       "image": "https://static.wixstatic.com/media/511c42_03e54940eec948628346631343499d5f~mv2.png",
-      "past": true
+      "ticket_url": "",
+      "description": ""
+    },
+    {
+      "past": false,
+      "title": "Känguru Chroniken",
+      "date": "26.07",
+      "venue": "Hier"
     }
   ]
 }
