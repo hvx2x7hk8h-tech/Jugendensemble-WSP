@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: DEIN-GITHUB-USERNAME/jugendensemble-wsp
   branch: main
+  auth_type: pkce
+  app_id: DEINE-GITHUB-OAUTH-APP-CLIENT-ID
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
@@ -24,11 +27,9 @@ collections:
             fields:
               - {label: "Titel", name: "title", widget: "string"}
               - {label: "Datum", name: "date", widget: "string", hint: "z.B. Samstag, 15. März 2026"}
-              - {label: "Uhrzeit", name: "time", widget: "string", required: false, hint: "z.B. 19:30 Uhr"}
+              - {label: "Uhrzeit", name: "time", widget: "string", required: false}
               - {label: "Veranstaltungsort", name: "venue", widget: "string"}
               - {label: "Kurzbeschreibung", name: "description", widget: "text", required: false}
-              - {label: "TicketTailor Widget-ID", name: "tt_widget_id", widget: "string", required: false, hint: "Aus TicketTailor Dashboard → Events → Embed. Leer lassen wenn noch nicht eingerichtet."}
-              - {label: "Ticket-Link (Fallback)", name: "ticket_url", widget: "string", required: false, hint: "Nur wenn keine TicketTailor Widget-ID vorhanden"}
               - {label: "Poster / Bild", name: "image", widget: "image", required: false}
               - {label: "Vergangen?", name: "past", widget: "boolean", default: false}
 
@@ -40,7 +41,7 @@ collections:
         file: "content/home.json"
         format: "json"
         fields:
-          - {label: "Hero Hintergrundbild", name: "hero_image", widget: "image", hint: "Bild das im Hintergrund aller Seiten erscheint"}
+          - {label: "Hero Hintergrundbild", name: "hero_image", widget: "image"}
           - {label: "Untertitel im Hero", name: "hero_subtitle", widget: "string"}
           - {label: "Einleitungstext", name: "intro_text", widget: "text"}
           - {label: "Zitat (Banner)", name: "quote", widget: "string", required: false}
@@ -50,7 +51,7 @@ collections:
         file: "content/about.json"
         format: "json"
         fields:
-          - {label: "Haupttext", name: "body", widget: "text", hint: "Doppelte Leerzeile = neuer Absatz"}
+          - {label: "Haupttext", name: "body", widget: "text"}
 
   - name: "einstellungen"
     label: "⚙️ Einstellungen"
@@ -62,4 +63,7 @@ collections:
         fields:
           - {label: "Kontakt E-Mail", name: "email", widget: "string"}
           - {label: "Instagram URL", name: "instagram", widget: "string", required: false}
-          - {label: "Formspree ID", name: "formspree_id", widget: "string"}
+          - {label: "Formspree ID (Kontaktformular)", name: "formspree_id", widget: "string"}
+          - {label: "EmailJS Service ID", name: "emailjs_service_id", widget: "string", required: false}
+          - {label: "EmailJS Template ID", name: "emailjs_template_id", widget: "string", required: false}
+          - {label: "EmailJS Public Key", name: "emailjs_public_key", widget: "string", required: false}

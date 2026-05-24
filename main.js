@@ -82,9 +82,3 @@ async function renderEvents(containerId, showAll = false) {
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 }
 
-// ── NETLIFY IDENTITY ──
-if (window.netlifyIdentity) {
-  window.netlifyIdentity.on('init', user => {
-    if (!user) window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-  });
-}

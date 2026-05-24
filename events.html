@@ -6,8 +6,7 @@
   <title>Vorstellungen & Tickets — Jugendensemble WSP</title>
   <meta name="description" content="Alle Vorstellungen des Jugendensemble WSP. Kostenlose Tickets direkt reservieren.">
   <link rel="stylesheet" href="style.css">
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <style>
+    <style>
     /* ── SHOW CARDS ── */
     .show-list { display: flex; flex-direction: column; gap: 1.2rem; }
     .show-card {
@@ -309,6 +308,8 @@
 
 <!-- QR CODE LIBRARY -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="main.js"></script>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -325,6 +326,11 @@ let formspreeId = 'DEINE_FORMSPREE_ID';
   const settings = await loadJSON('/content/settings.json');
   if (settings?.formspree_id && settings.formspree_id !== 'DEINE_FORMSPREE_ID') {
     formspreeId = settings.formspree_id;
+  }
+  if (settings?.emailjs_public_key) {
+    emailjs.init({ publicKey: settings.emailjs_public_key });
+    window._ejsServiceId  = settings.emailjs_service_id  || '';
+    window._ejsTemplateId = settings.emailjs_template_id || '';
   }
 })();
 
@@ -416,14 +422,14 @@ async function submitReservation() {
   const reservationId = 'WSP-' + Date.now().toString(36).toUpperCase();
   const name = first + ' ' + last;
 
-  // Send via Formspree
+  // 1. Benachrichtigung an euch via Formspree
   try {
     if (formspreeId !== 'DEINE_FORMSPREE_ID') {
       await fetch(`https://formspree.io/f/${formspreeId}`, {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          _subject: `🎭 Ticket-Reservierung: ${currentEvent.title}`,
+          _subject: `🎭 Neue Reservierung: ${currentEvent.title}`,
           name, email, qty,
           vorstellung: currentEvent.title,
           datum: currentEvent.date || '—',
@@ -433,7 +439,23 @@ async function submitReservation() {
         })
       });
     }
-  } catch(e) { /* continue even if email fails */ }
+  } catch(e) { /* continue */ }
+
+  // 2. Bestätigungs-E-Mail an den Kunden via EmailJS
+  try {
+    if (window._ejsServiceId && window._ejsTemplateId) {
+      await emailjs.send(window._ejsServiceId, window._ejsTemplateId, {
+        to_name:          first,
+        to_email:         email,
+        vorstellung:      currentEvent.title,
+        datum:            (currentEvent.date || '—') + (currentEvent.time ? ', ' + currentEvent.time : ''),
+        ort:              currentEvent.venue || '—',
+        anzahl:           qty + (qty === '1' ? ' Ticket' : ' Tickets'),
+        reservierungs_id: reservationId,
+        reply_to:         'jugendensemblewsp@gmail.com',
+      });
+    }
+  } catch(e) { /* continue if email fails */ }
 
   // Show ticket
   showTicket({ name, email, qty, id: reservationId });
