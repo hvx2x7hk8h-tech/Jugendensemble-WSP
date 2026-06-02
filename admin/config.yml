@@ -1,9 +1,9 @@
 backend:
   name: github
-  repo: DEIN-GITHUB-USERNAME/jugendensemble-wsp
+  repo: hvx2x7hk8h-tech/Jugendensemble-WSP
   branch: main
   auth_type: pkce
-  app_id: DEINE-GITHUB-OAUTH-APP-CLIENT-ID
+  app_id: Ov23lieKohbi4JiTNOxc
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
